@@ -5,9 +5,9 @@ import { TiAttachment } from "react-icons/ti";
 import { MdKeyboardVoice } from "react-icons/md";
 import { IoSend } from "react-icons/io5";
 
-import { useRef, useState, useEffect } from "react";
-import { io, Socket } from "socket.io-client";
-import { cp } from "fs/promises";
+import { useRef, useState } from "react";
+
+import Dashboard from "../Dashboard/dashboard";
 
 export default function ChatWindow() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -15,30 +15,7 @@ export default function ChatWindow() {
   const [listening, setListening] = useState(false);
   const [inputText, setInputText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [serverOutput, setServerOutput] = useState<string | null>(null);
-
-  useEffect(() => {
-    const s = io("http://localhost:4000");
-    setSocket(s);
-
-    s.on("userprompt", (data: any) => {
-      const output =
-        typeof data === "string" ? data : JSON.stringify(data, null, 2);
-      setServerOutput(output);
-      setLoading(false);
-
-      // Text-to-Speech playback
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        const utter = new window.SpeechSynthesisUtterance(output);
-        window.speechSynthesis.speak(utter);
-      }
-    });
-
-    return () => {
-      s.disconnect();
-    };
-  }, []);
 
   const handleAttachmentClick = () => {
     fileInputRef.current?.click();
@@ -56,42 +33,54 @@ export default function ChatWindow() {
     setTimeout(() => setListening(false), 2000);
   };
 
-  // API call to backend via socket
+  // API call to backend via REST endpoint
   const handleSubmit = async () => {
     if (!inputText && !attachedFile) return;
     setLoading(true);
     setServerOutput(null);
     try {
-      if (socket) {
-        if (attachedFile) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const fileData = e.target?.result;
-            console.log("fileData: ", fileData);
-            socket.emit("userprompt", {
-              prompt: inputText,
-              file: {
-                name: attachedFile.name,
-                type: attachedFile.type,
-                data: fileData,
-              },
-            });
-            setInputText("");
-            setAttachedFile(null);
-          };
-          reader.readAsArrayBuffer(attachedFile);
-        } else {
-          console.log("inputText: ", inputText);
-          socket.emit("userprompt", {
-            prompt: inputText,
-          });
-          setInputText("");
-          setAttachedFile(null);
-        }
+      let response;
+      if (attachedFile) {
+        const formData = new FormData();
+        formData.append("file", attachedFile);
+        formData.append("prompt", inputText);
+
+        response = await fetch("http://localhost:4000/api/upload-csv-prompt", {
+          method: "POST",
+          body: formData,
+        });
+      } else {
+        response = await fetch("http://localhost:4000/api/userprompt", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ prompt: inputText }),
+        });
       }
+
+      if (!response.ok) {
+        throw new Error("Failed to submit prompt");
+      }
+
+      const data = await response.json();
+      const output =
+        typeof data === "string" ? data : JSON.stringify(data, null, 2);
+      setServerOutput(output);
+
+      // Text-to-Speech playback
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        const utter = new window.SpeechSynthesisUtterance(output);
+        window.speechSynthesis.speak(utter);
+      }
+
+      setInputText("");
+      setAttachedFile(null);
     } catch (err) {
       // handle error as needed
       console.error(err);
+      setServerOutput("Upload failed");
+    } finally {
       setLoading(false);
     }
   };
@@ -172,6 +161,28 @@ export default function ChatWindow() {
           <div className="whitespace-pre-wrap break-words">{serverOutput}</div>
         </div>
       )}
+      {/* Try to parse serverOutput as chartData for Dashboard */}
+      {serverOutput &&
+        (() => {
+          try {
+            const parsed = JSON.parse(serverOutput);
+            if (
+              parsed &&
+              typeof parsed === "object" &&
+              parsed.labels &&
+              parsed.datasets
+            ) {
+              return (
+                <div className="mt-4">
+                  <Dashboard chartData={parsed} />
+                </div>
+              );
+            }
+          } catch (e) {
+            // Not valid JSON or not chart data
+          }
+          return null;
+        })()}
     </div>
   );
 }
