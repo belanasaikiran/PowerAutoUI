@@ -4,8 +4,13 @@ export default function ChatWindow() {
   return (
     <div className="flex gap-2 justify-between min-w-full sticky ">
       <div className="flex">
-        <Image src="/logo.png" alt="Logo" width={100} height={100} />
-        PowerAuto
+        <Image
+          className="rounded-xl"
+          src="/logo.png"
+          alt="Logo"
+          width={80}
+          height={80}
+        />
       </div>
       <div>
         <a
