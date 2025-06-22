@@ -1,7 +1,6 @@
 import Image from "next/image";
 import ChatWindow from "./components/ChatWindow/page";
 import NavBar from "./components/NavBar/nav";
-import Dashboard from "./components/Dashboard/dashboard";
 import ToolKit from "./components/ToolKit/tool";
 
 export default function Home() {
@@ -11,7 +10,7 @@ export default function Home() {
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <ToolKit />
 
-        <Dashboard />
+        {/* <Dashboard /> */}
         <ChatWindow />
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">

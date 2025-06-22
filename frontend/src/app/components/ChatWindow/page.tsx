@@ -16,6 +16,7 @@ export default function ChatWindow() {
   const [inputText, setInputText] = useState("");
   const [loading, setLoading] = useState(false);
   const [serverOutput, setServerOutput] = useState<string | null>(null);
+  const [chartData, setChartData] = useState<any>(null);
 
   const handleAttachmentClick = () => {
     fileInputRef.current?.click();
@@ -66,7 +67,27 @@ export default function ChatWindow() {
       const data = await response.json();
       const output =
         typeof data === "string" ? data : JSON.stringify(data, null, 2);
+      console.log("Server output:", data);
       setServerOutput(output);
+
+      // If the response is valid chart data, set it
+      if (data && typeof data === "object" && data.summary) {
+        let summary = data.summary;
+        if (typeof summary === "string") {
+          // Remove ```json or ``` if present, then parse
+          summary = summary.replace(/^```json\s*|^```\s*/i, "");
+          // also remove ``` at endpoint
+          summary = summary.replace(/```$/, "");
+          // convert summary to JSON object
+          summary = JSON.parse(summary);
+          console.log("set Summary: ", summary);
+          setChartData(summary);
+        } else {
+          setChartData(null);
+        }
+      } else {
+        setChartData(null);
+      }
 
       // Text-to-Speech playback
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
@@ -80,6 +101,7 @@ export default function ChatWindow() {
       // handle error as needed
       console.error(err);
       setServerOutput("Upload failed");
+      setChartData(null);
     } finally {
       setLoading(false);
     }
@@ -158,31 +180,16 @@ export default function ChatWindow() {
       {serverOutput && (
         <div className="mt-4 p-3 rounded bg-gray-800 text-white border border-gray-600">
           <strong>Server Output:</strong>
-          <div className="whitespace-pre-wrap break-words">{serverOutput}</div>
+          <div className="whitespace-pre-wrap break-words">
+            {typeof serverOutput === "string"
+              ? serverOutput.replace(/^```json\s*|^```\s*/i, "")
+              : JSON.stringify(serverOutput, null, 2)}
+          </div>
         </div>
       )}
-      {/* Try to parse serverOutput as chartData for Dashboard */}
-      {serverOutput &&
-        (() => {
-          try {
-            const parsed = JSON.parse(serverOutput);
-            if (
-              parsed &&
-              typeof parsed === "object" &&
-              parsed.labels &&
-              parsed.datasets
-            ) {
-              return (
-                <div className="mt-4">
-                  <Dashboard chartData={parsed} />
-                </div>
-              );
-            }
-          } catch (e) {
-            // Not valid JSON or not chart data
-          }
-          return null;
-        })()}
+      <div className="py-4">
+        <Dashboard chartData={chartData} />
+      </div>
     </div>
   );
 }
