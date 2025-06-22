@@ -24,6 +24,8 @@ import { Rectangle, Circle, Arrow } from '../reusableComponents/ShapeComponents'
 import { ComponentConfig } from '../types/dashBoardComponentTypes';
 import { DashboardResponse, DashboardConfig, KPIConfig, DashboardComponentConfig } from '../types/dashboardConfigTypes';
 
+
+//
 interface DashboardCanvasProps {
   components: ComponentConfig[];
   onAddComponent: (component: ComponentConfig) => void;
@@ -463,11 +465,17 @@ const GeneratedDashboard: React.FC<{ config: DashboardConfig }> = ({ config }) =
           minHeight: '200px',
         }}
       >
+        {/* Component Title */}
+        <div className="px-4 py-2 border-b border-gray-100">
+          <h3 className="text-lg font-bold text-gray-800 truncate">
+            {props.title || `${type} Component`}
+          </h3>
+        </div>
         <div 
-          className="w-full h-full overflow-hidden" 
+          className="w-full overflow-hidden" 
           style={{ 
-            padding: '8px', 
-            paddingTop: '8px',
+            padding: '8px',
+            height: 'calc(100% - 50px)', // Account for title header
           }}
         >
           {ComponentToRender}
@@ -497,8 +505,9 @@ const GeneratedDashboard: React.FC<{ config: DashboardConfig }> = ({ config }) =
       }}
     >
       {/* Dashboard Title */}
-      <div className="mb-6 text-center">
-        <h2 className="text-2xl font-bold text-gray-800">{config.dashboardTitle}</h2>
+      <div className="mb-6 text-center bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <h1 className="text-3xl font-bold text-gray-900">{config.dashboardTitle}</h1>
+        <p className="text-sm text-gray-600 mt-1">Generated from Excel data</p>
       </div>
       
       {/* Render KPIs */}
@@ -928,12 +937,10 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Components Display Bar - Only show when not displaying generated dashboard */}
-        {!showGeneratedDashboard && (
-          <div className="flex-shrink-0 z-20">
-            <ComponentsDisplay />
-          </div>
-        )}
+        {/* Components Display Bar - Always show */}
+        <div className="flex-shrink-0 z-20">
+          <ComponentsDisplay />
+        </div>
 
                 {/* Dashboard Container */}
         <div className="flex-1 bg-white m-4 rounded-lg shadow-lg border border-gray-200 overflow-auto">

@@ -125,12 +125,12 @@ const BarChart: React.FC<BarChartProps> = ({
             onChange={(e) => setCurrentTitle(e.target.value)}
             onBlur={handleTitleSubmit}
             onKeyPress={(e) => e.key === 'Enter' && handleTitleSubmit()}
-            className="text-sm font-bold border border-gray-300 rounded px-2 py-1 flex-1 mr-2"
+            className="text-sm  font-bold border border-gray-300 rounded px-2 py-1 flex-1 mr-2"
             autoFocus
           />
         ) : (
           <h3 
-            className={`text-sm font-bold ${editable ? 'cursor-pointer hover:text-blue-600' : ''} flex-1`}
+            className={`text-sm text-blackfont-bold ${editable ? 'cursor-pointer hover:text-blue-600' : ''} flex-1`}
             onClick={() => editable && setIsEditingTitle(true)}
           >
             {currentTitle}
