@@ -1,9 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PowerAutoUI
+
+PowerAutoUI is an AI-powered data visualization application that allows users to upload data files and generate interactive charts through natural language prompts. Using a conversational interface, users can analyze their data, create customized visualizations, and gain insights without needing to write code.
+
+![demo](./ScreenShot/demo.png)
+
+## Technology Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **UI Design**: TailwindCSS 4
+- **Data Visualization**: Chart.js, react-chartjs-2
+- **Real-time Communication**: Socket.IO
+- **Voice Features**: ElevenLabs API for speech-to-text and text-to-speech
+
+## Features
+
+- **Conversational AI Interface**: Chat with the application to analyze and visualize your data
+- **File Upload**: Easily upload data files for analysis
+- **Dynamic Visualization**: Generate various chart types based on your requirements
+- **Speech-to-Text**: Use voice commands to interact with the application
+- **Text-to-Speech**: Listen to explanations of your data analysis
+- **Responsive Design**: Works seamlessly across different devices and screen sizes
 
 ## Getting Started
 
-First, run the development server:
+### Requirements
 
+- Node.js 18.0.0 or later
+- npm, yarn, pnpm, or bun package manager
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/PowerAutoUI.git
+cd PowerAutoUI
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+3. Run the development server:
 ```bash
 npm run dev
 # or
@@ -14,23 +58,13 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open your browser:
+   Navigate to [http://localhost:3000](http://localhost:3000) to start using PowerAutoUI.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Contributing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Learn More
+### License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the LICENSE file for details.
