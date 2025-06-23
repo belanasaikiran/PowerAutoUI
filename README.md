@@ -1,6 +1,6 @@
-# PowerAutoUI
+# WoW
 
-PowerAutoUI is an AI-powered data visualization application that allows users to upload data files and generate interactive charts through natural language prompts. Using a conversational interface, users can analyze their data, create customized visualizations, and gain insights without needing to write code.
+WoW is an AI-powered data visualization application that allows users to upload data files and generate interactive charts through natural language prompts. Using a conversational interface, users can analyze their data, create customized visualizations, and gain insights without needing to write code.
 
 ![demo](./ScreenShot/demo.png)
 
